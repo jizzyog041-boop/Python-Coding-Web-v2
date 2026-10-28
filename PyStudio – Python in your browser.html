@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>PyStudio – Python in your browser</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#12141C;--pn:#181B26;--ln:#272B3B;--tx:#D7DAE5;--mu:#7D8499;--ac:#3DDC97;--kw:#C586C0;--st:#E5A06B;--nu:#B5CEA8;--cm:#6E8A5C;--fn:#E6D98F;--cl:#4EC9B0;--bi:#4FC1FF;--dc:#D7BA7D;--er:#FF7B7B;--sel:rgba(61,220,151,.22);color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#12141C;--pn:#181B26;--ln:#272B3B;--tx:#D7DAE5;--mu:#7D8499;--ac:#3DDC97;--kw:#C586C0;--st:#E5A06B;--nu:#B5CEA8;--cm:#6E8A5C;--fn:#E6D98F;--cl:#4EC9B0;--bi:#4FC1FF;--dc:#D7BA7D;--er:#FF7B7B;--sel:rgba(61,220,151,.22);color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#12141C;--pn:#181B26;--ln:#272B3B;--tx:#D7DAE5;--mu:#7D8499;--ac:#3DDC97;--kw:#C586C0;--st:#E5A06B;--nu:#B5CEA8;--cm:#6E8A5C;--fn:#E6D98F;--cl:#4EC9B0;--bi:#4FC1FF;--dc:#D7BA7D;--er:#FF7B7B;--sel:rgba(61,220,151,.22);color-scheme:dark}
+*{box-sizing:border-box}html,body{height:100%;margin:0}
+body{background:radial-gradient(900px 380px at 8% -8%,rgba(79,193,255,.13),transparent),radial-gradient(700px 380px at 100% 0,rgba(61,220,151,.10),transparent),var(--bg);color:var(--tx);font:13px "IBM Plex Sans",system-ui,sans-serif;overflow:hidden}
+.mono,textarea,pre,.t input{font-family:"JetBrains Mono",ui-monospace,monospace}
+.app{height:100%;display:grid;grid-template-rows:46px auto 1fr 26px}
+.bar{display:flex;align-items:center;gap:10px;padding:0 14px;background:var(--pn);border-bottom:1px solid var(--ln)}
+.brand{font-weight:600;font-size:16px;letter-spacing:-.01em;margin-right:auto;display:flex;align-items:center;gap:8px}
+.logo{width:22px;height:22px;border-radius:6px;background:linear-gradient(135deg,var(--bi),var(--ac));display:grid;place-items:center;color:#0B1020;font:600 12px "JetBrains Mono",monospace}
+button{font:inherit;cursor:pointer;color:var(--tx);background:none;border:1px solid var(--ln);border-radius:8px;padding:6px 12px;transition:border-color .15s,transform .12s,background .15s}
+button:hover{border-color:var(--mu)}button:active{transform:scale(.96)}
+#run{background:linear-gradient(135deg,var(--ac),var(--bi));border-color:transparent;color:#06130D;font-weight:600;display:flex;align-items:center;gap:7px;box-shadow:0 4px 18px -4px color-mix(in srgb,var(--ac) 70%,transparent)}
+#run.go{animation:pulse 1.1s ease-in-out infinite}
+@keyframes pulse{50%{box-shadow:0 0 0 6px color-mix(in srgb,var(--ac) 28%,transparent)}}
+.mid{display:grid;grid-template-columns:210px 1fr;min-height:0}
+.ex{background:var(--pn);border-right:1px solid var(--ln);overflow:auto;padding:10px 0}
+.exh{display:flex;justify-content:space-between;align-items:center;padding:0 12px 8px;color:var(--mu);font-weight:600}
+.exh button{padding:1px 8px;font-size:15px;line-height:1.3}
+.fi{display:flex;align-items:center;gap:8px;padding:6px 12px;cursor:pointer;color:var(--mu);border-left:2px solid transparent}
+.fi:hover{background:var(--bg);color:var(--tx)}.fi.on{background:var(--bg);color:var(--tx);border-left-color:var(--ac)}
+.fi s{margin-left:auto;text-decoration:none;opacity:0;color:var(--mu);padding:0 4px}.fi:hover s{opacity:1}.fi s:hover{color:var(--er)}
+.py{font:600 9px "JetBrains Mono",monospace;background:linear-gradient(135deg,var(--bi),var(--dc));color:#0B1020;border-radius:3px;padding:2px 3px}
+.nf{margin:4px 10px;width:calc(100% - 20px);background:var(--bg);border:1px solid var(--ac);border-radius:6px;color:var(--tx);padding:5px 8px;outline:0;font:13px "JetBrains Mono",monospace}
+.main{display:grid;grid-template-rows:36px 1fr 36%;min-height:0;min-width:0}
+.tabs{display:flex;background:var(--pn);border-bottom:1px solid var(--ln);overflow-x:auto}
+.tab{display:flex;align-items:center;gap:8px;padding:0 14px;color:var(--mu);cursor:pointer;border-right:1px solid var(--ln);white-space:nowrap;border-top:2px solid transparent}
+.tab.on{background:var(--bg);color:var(--tx);border-top-color:var(--ac)}.tab s{text-decoration:none;opacity:.5}.tab s:hover{opacity:1;color:var(--er)}
+.ed{display:flex;min-height:0;background:var(--bg)}
+.gut,.code pre,.code textarea{font-size:13.5px;line-height:1.65;padding:12px 0;margin:0;tab-size:4}
+.gut{width:50px;flex:none;text-align:right;padding-right:12px;color:var(--mu);opacity:.7;overflow:hidden;user-select:none}
+.code{position:relative;flex:1;min-width:0}
+.code pre,.code textarea{position:absolute;inset:0;padding-left:6px;padding-right:12px;white-space:pre;border:0;overflow:auto;background:none;word-wrap:normal}
+.code pre{overflow:hidden;pointer-events:none;color:var(--tx)}
+.code textarea{color:transparent;caret-color:var(--ac);resize:none;outline:0;z-index:1}
+.code textarea::selection{background:var(--sel)}
+.k{color:var(--kw)}.s{color:var(--st)}.n{color:var(--nu)}.c{color:var(--cm);font-style:italic}.f{color:var(--fn)}.t{color:var(--cl)}.b{color:var(--bi)}.d{color:var(--dc)}.me{color:var(--bi);font-style:italic}
+.term{display:flex;flex-direction:column;min-height:0;border-top:1px solid var(--ln);background:var(--pn)}
+.th{display:flex;align-items:center;gap:10px;padding:6px 14px;color:var(--mu);font-weight:600;border-bottom:1px solid var(--ln)}
+.th button{margin-left:auto;padding:2px 10px;font-size:12px}
+#out{flex:1;overflow:auto;margin:0;padding:10px 14px;font-size:13px;line-height:1.6;white-space:pre-wrap;word-break:break-word}
+#out .er{color:var(--er)}#out .ok{color:var(--ac)}#out .mu{color:var(--mu)}
+#out input{background:none;border:0;border-bottom:1px solid var(--ac);color:var(--tx);font:inherit;outline:0;width:40%;min-width:120px}
+.sb{display:flex;gap:16px;align-items:center;padding:0 14px;background:var(--pn);border-top:1px solid var(--ln);color:var(--mu);font-size:12px}
+.sb .wm{margin-left:auto;font-weight:600;background:linear-gradient(90deg,var(--bi),var(--ac));-webkit-background-clip:text;background-clip:text;color:transparent}
+@media(max-width:760px){.mid{grid-template-columns:1fr;grid-template-rows:auto 1fr}.ex{display:flex;align-items:center;border:0;border-bottom:1px solid var(--ln);padding:4px;overflow-x:auto}.exh{padding:0 6px}.fi{white-space:nowrap;border-left:0}.main{grid-template-rows:36px 1fr 40%}.sb span:nth-child(2){display:none}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+:focus-visible{outline:2px solid var(--bi);outline-offset:1px}
+*{scrollbar-width:thin;scrollbar-color:var(--ln) transparent}
+.logo{box-shadow:0 0 18px color-mix(in srgb,var(--bi) 55%,transparent)}
+.bar{background:color-mix(in srgb,var(--pn) 85%,transparent);backdrop-filter:blur(8px)}
+.ban{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:12px 18px;border-bottom:1px solid var(--ln)}
+.ban h1{margin:0;font:600 21px/1.2 "IBM Plex Sans",sans-serif;letter-spacing:-.02em;background:linear-gradient(90deg,var(--bi),var(--ac),var(--dc),var(--bi));background-size:300% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:shine 9s linear infinite}
+@keyframes shine{to{background-position:300% 0}}
+.qt{color:var(--mu);font-size:13px;min-height:20px;text-align:right;transition:opacity .4s,transform .4s}
+.qt.hide{opacity:0;transform:translateY(6px)}
+.fi.on{background:linear-gradient(90deg,color-mix(in srgb,var(--ac) 14%,transparent),transparent)}
+.tab.on{box-shadow:inset 0 -1px 0 var(--bg)}
+.th::before{content:"";width:10px;height:10px;border-radius:50%;background:#FF5F57;box-shadow:16px 0 #FEBC2E,32px 0 #28C840;margin-right:44px}
+.code::before{content:"Developed by Dhanush";position:absolute;right:22px;bottom:14px;font:600 26px "IBM Plex Sans",sans-serif;letter-spacing:-.02em;color:var(--tx);opacity:.07;pointer-events:none;user-select:none}
+@media(max-width:760px){.ban{flex-direction:column;align-items:flex-start;gap:2px;padding:8px 14px}.ban h1{font-size:16px}.qt{text-align:left;font-size:12px}.code::before{font-size:18px}}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="bar"><div class="brand"><span class="logo">Py</span>PyStudio</div><button id="clr">Clear output</button><button id="run" aria-label="Run code">▶ Run <span class="mono" style="font-weight:400;opacity:.7">Ctrl+Enter</span></button></header>
+<div class="ban"><h1>Keep coding. Keep growing.</h1><div class="qt" id="qt"></div></div>
+<div class="mid">
+<aside class="ex"><div class="exh"><span>Files</span><button id="nw" aria-label="New file">+</button></div><div id="fl"></div></aside>
+<section class="main">
+<div class="tabs" id="tb"></div>
+<div class="ed"><pre class="gut" id="gt"></pre><div class="code"><pre id="hl" aria-hidden="true"></pre><textarea id="ta" spellcheck="false" autocapitalize="off" autocomplete="off" wrap="off" aria-label="Code editor"></textarea></div></div>
+<div class="term"><div class="th">Output<button id="x">Clear</button></div><pre id="out"></pre></div>
+</section>
+</div>
+<footer class="sb"><span id="ps">Ln 1, Col 1</span><span>Python 3 · runs in your browser</span><span class="wm">Developed by Dhanush</span><span id="rs">Ready</span></footer>
+</div>
+
+
+<script>
+const $=s=>document.querySelector(s),ta=$("#ta"),hl=$("#hl"),gt=$("#gt"),out=$("#out");
+const DEF={
+"main.py":`from utils import greet, fib
+
+print(greet("Kerala"))
+
+for i in range(8):
+    print("fib(%d) = %d" % (i, fib(i)))
+
+total = sum(fib(i) for i in range(10))
+print("Total:", total)
+`,
+"utils.py":`def greet(name):
+    return "Hello, {}! Welcome to PyStudio.".format(name)
+
+
+def fib(n):
+    a, b = 0, 1
+    for _ in range(n):
+        a, b = b, a + b
+    return a
+`,
+"students.py":`class Student:
+    def __init__(self, name, marks):
+        self.name = name
+        self.marks = marks
+
+    def average(self):
+        return sum(self.marks) / len(self.marks)
+
+
+# Results
+for s in [Student("Anu", [90, 82, 77]), Student("Hari", [68, 74, 81])]:
+    print(s.name, "->", round(s.average(), 1))
+
+name = input("Your name? ")
+print("Hi", name)
+`};
+let F={},tabs=[],act="",rid=0;
+try{const s=JSON.parse(localStorage.getItem("pystudio"));if(s&&s.F&&Object.keys(s.F).length)F=s.F}catch(e){}
+const fresh=!Object.keys(F).length;if(fresh)F={...DEF};
+act=Object.keys(F)[0];tabs=[act];
+const save=()=>{try{localStorage.setItem("pystudio",JSON.stringify({F}))}catch(e){}};
+const esc=s=>s.replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
+const KW=new Set("False None True and as assert async await break class continue def del elif else except finally for from global if import in is lambda nonlocal not or pass raise return try while with yield".split(" "));
+const BI=new Set("print len range int str float list dict set tuple input open sum min max abs sorted enumerate zip map filter isinstance type round any all reversed bool chr ord pow divmod repr format".split(" "));
+const RE=/(#.*)|((?:[rbfRBF]{1,2})?(?:"""[\s\S]*?(?:"""|$)|'''[\s\S]*?(?:'''|$)|"(?:\\.|[^"\\\n])*"?|'(?:\\.|[^'\\\n])*'?))|(\b\d[\d_]*\.?\d*(?:[eE][+-]?\d+)?\b)|(@\w[\w.]*)|([A-Za-z_]\w*)/g;
+function hi(src){let o="",l=0,m;RE.lastIndex=0;while((m=RE.exec(src))){o+=esc(src.slice(l,m.index));l=RE.lastIndex;const t=esc(m[0]);
+ if(m[1])o+=`<span class=c>${t}</span>`;else if(m[2])o+=`<span class=s>${t}</span>`;else if(m[3])o+=`<span class=n>${t}</span>`;else if(m[4])o+=`<span class=d>${t}</span>`;
+ else{const w=m[5],nx=src[l],pv=/(?:def|class)\s+$/.test(src.slice(Math.max(0,m.index-8),m.index));
+  o+=KW.has(w)?`<span class=k>${t}</span>`:pv?`<span class="${/^class/.test(src.slice(Math.max(0,m.index-8),m.index).trim())?"t":"f"}">${t}</span>`:(w=="self"||w=="cls")?`<span class=me>${t}</span>`:BI.has(w)?`<span class=b>${t}</span>`:nx=="("?`<span class=f>${t}</span>`:/^[A-Z]\w*[a-z]/.test(w)?`<span class=t>${t}</span>`:t}}
+ return o+esc(src.slice(l))}
+function draw(){const v=ta.value;hl.innerHTML=hi(v)+"\n";const n=v.split("\n").length;gt.textContent=Array.from({length:n},(_,i)=>i+1).join("\n")}
+function pos(){const b=ta.value.slice(0,ta.selectionStart).split("\n");$("#ps").textContent=`Ln ${b.length}, Col ${b[b.length-1].length+1}`}
+function lists(){$("#fl").innerHTML=Object.keys(F).map(n=>`<div class="fi ${n==act?"on":""}" data-f="${n}"><span class=py>PY</span><span class=mono>${esc(n)}</span><s data-d="${n}" title="Delete">✕</s></div>`).join("");
+ $("#tb").innerHTML=tabs.map(n=>`<div class="tab mono ${n==act?"on":""}" data-f="${n}">${esc(n)}<s data-x="${n}">✕</s></div>`).join("")}
+function openF(n){if(!F[n]&&F[n]!=="")return;if(!tabs.includes(n))tabs.push(n);act=n;ta.value=F[n];draw();lists();pos();ta.focus()}
+$("#fl").onclick=e=>{const d=e.target.dataset.d,f=e.target.closest("[data-f]");if(d){if(Object.keys(F).length<2)return;delete F[d];tabs=tabs.filter(t=>t!=d);if(act==d)act=tabs[0]||Object.keys(F)[0];save();openF(act)}else if(f)openF(f.dataset.f)};
+$("#tb").onclick=e=>{const x=e.target.dataset.x,f=e.target.closest("[data-f]");if(x){tabs=tabs.filter(t=>t!=x);if(!tabs.length)tabs=[act==x?Object.keys(F).find(k=>k!=x)||x:act];if(act==x)act=tabs[tabs.length-1];openF(act)}else if(f)openF(f.dataset.f)};
+$("#nw").onclick=()=>{if($(".nf"))return;const i=document.createElement("input");i.className="nf";i.placeholder="name.py";$("#fl").appendChild(i);i.focus();
+ i.onkeydown=e=>{if(e.key=="Escape")i.remove();if(e.key=="Enter"){let n=i.value.trim().replace(/[^\w.-]/g,"");if(!n)return i.remove();if(!/\.py$/.test(n))n+=".py";if(F[n]!==undefined){openF(n);return i.remove()}F[n]="# "+n+"\n";save();i.remove();openF(n)}};i.onblur=()=>i.remove()};
+let sv;ta.oninput=()=>{F[act]=ta.value;draw();clearTimeout(sv);sv=setTimeout(save,400)};
+ta.onscroll=()=>{hl.scrollTop=ta.scrollTop;hl.scrollLeft=ta.scrollLeft;gt.scrollTop=ta.scrollTop};
+ta.onkeyup=ta.onclick=pos;
+function ins(t){const s=ta.selectionStart;ta.setRangeText(t,s,ta.selectionEnd,"end");ta.oninput()}
+ta.onkeydown=e=>{if((e.ctrlKey||e.metaKey)&&e.key=="Enter"){e.preventDefault();return run()}
+ if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()=="s"){e.preventDefault();save();$("#rs").textContent="Saved";return}
+ if(e.key=="Tab"){e.preventDefault();ins("    ")}
+ if(e.key=="Enter"){e.preventDefault();const v=ta.value,s=ta.selectionStart,ls=v.lastIndexOf("\n",s-1)+1,ln=v.slice(ls,s),ind=ln.match(/^ */)[0];ins("\n"+ind+(/:\s*$/.test(ln)?"    ":""))}
+ const P={"(":")","[":"]","{":"}",'"':'"',"'":"'"};if(P[e.key]&&ta.selectionStart==ta.selectionEnd&&!/\w/.test(ta.value[ta.selectionStart]||"")){e.preventDefault();const s=ta.selectionStart;ta.setRangeText(e.key+P[e.key],s,s,"end");ta.selectionStart=ta.selectionEnd=s+1;ta.oninput()}};
+function w(t,c){const s=document.createElement("span");if(c)s.className=c;s.textContent=t;out.appendChild(s);out.scrollTop=out.scrollHeight}
+function inp(p){return new Promise(r=>{w(p||"");const i=document.createElement("input");out.appendChild(i);i.focus();out.scrollTop=out.scrollHeight;i.onkeydown=e=>{if(e.key=="Enter"){const v=i.value;i.remove();w(v+"\n","mu");r(v)}}})}
+function rd(x){if(Sk.builtinFiles===undefined||Sk.builtinFiles.files[x]===undefined){const m=x.match(/(\w+\.py)$/);if(m&&F[m[1]]!==undefined)return F[m[1]];throw "File not found: '"+x+"'"}return Sk.builtinFiles.files[x]}
+const BASES=["https://cdn.jsdelivr.net/npm/skulpt@1.2.0/dist/","https://cdnjs.cloudflare.com/ajax/libs/skulpt/1.2.0/"];
+const ld=u=>new Promise((ok,no)=>{const s=document.createElement("script");s.src=u;s.onload=ok;s.onerror=no;document.head.appendChild(s)});
+const ready=(async()=>{for(const b of BASES){try{await ld(b+"skulpt.min.js");await ld(b+"skulpt-stdlib.js");if(window.Sk)return true}catch(e){}}return false})();
+async function run(){const my=++rid;save();out.textContent="";$("#run").classList.add("go");$("#rs").textContent="Running "+act+"…";
+ const t0=performance.now();
+ try{if(!await ready)throw new Error("Could not load the Python engine. Check your connection and reload.");Sk.configure({output:t=>w(t),read:rd,inputfun:inp,inputfunTakesPrompt:true,__future__:Sk.python3});await Sk.misceval.asyncToPromise(()=>Sk.importMainWithBody("<stdin>",false,F[act],true));if(my!=rid)return;w("\n✓ Finished in "+Math.round(performance.now()-t0)+" ms\n","ok");$("#rs").textContent="Finished"}
+ catch(e){if(my!=rid)return;w("\n"+e.toString()+"\n","er");$("#rs").textContent="Error"}
+ if(my==rid)$("#run").classList.remove("go")}
+$("#run").onclick=run;$("#clr").onclick=$("#x").onclick=()=>{if(out.querySelector("input")){rid++;$("#run").classList.remove("go");$("#rs").textContent="Stopped"}out.textContent=""};
+
+const Q=["Every expert was once a beginner. Keep going.","Small code every day beats big code someday.","A bug is just a lesson in disguise.","Your future self will thank you for practicing today.","Working code is the start. Clean code is the goal.","Progress over perfection.","Dream big. Commit often."],qe=$("#qt");let qi=0;qe.textContent=Q[0];setInterval(()=>{qe.classList.add("hide");setTimeout(()=>{qi=(qi+1)%Q.length;qe.textContent=Q[qi];qe.classList.remove("hide")},400)},4500);
+lists();ta.value=F[act];draw();pos();
+// opening moment: type the first file in, then run it
+if(fresh&&!matchMedia("(prefers-reduced-motion:reduce)").matches){const src=F[act];ta.value="";ta.readOnly=true;let i=0;const iv=setInterval(()=>{i+=3;ta.value=src.slice(0,i);draw();if(i>=src.length){clearInterval(iv);ta.readOnly=false;ta.value=src;draw();run()}},14)}
+else if(fresh)run();
+</script>
+</body>
+</html>
